@@ -6,7 +6,8 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:53:10 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/11/15 11:53:11 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/11/15 13:11:54 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
+# include	"get_next_line.h"
