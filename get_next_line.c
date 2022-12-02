@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:48:48 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/11/28 16:47:20 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/02 13:46:34 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,39 +14,49 @@
 
 #include <stdio.h>
 
-
-char	*get_next_line(int fd)
+char	*read_line(int fd, char *str)
 {
-	// static char	*stash;
-	char		*BUFF;
-	char		*str;
-	char		*tmp;
-	ssize_t		bytes_read;
-	ssize_t		len;
+	char	*BUFF;
+	size_t	bytes_read;
+	char	*tmp;
 
-	if (fd < 0 || BUFFER_SIZE < 0)
-		return (NULL);
 	BUFF = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!BUFF)
 		return (NULL);
 	bytes_read = 1;
-	len = 0;
-	str = ft_strdup("");
+	str = gnl_strdup("");
 	while (bytes_read > 0)
 	{
 		bytes_read = read(fd, BUFF, BUFFER_SIZE);
-		len += bytes_read;
-		tmp = ft_strjoin(str, BUFF);
+		BUFF[bytes_read] = '\0';
+		tmp = gnl_strjoin(str, BUFF);
 		if (!tmp)
-			return (free (str), NULL);
+			return (free(BUFF), free(str), NULL);
 		free(str);
 		str = tmp;
+		if (gnl_strchr(str, '\n'))
+			return (free(BUFF), free(tmp), str);
 	}
-	str[len] = '\0';
-	return (str);
+	return (free(BUFF), free(tmp), str);
 }
 
+char	*get_next_line(int fd)
+{
+	static char	*stash;
+	char		*str;
 
+	if (fd < 0 || BUFFER_SIZE < 0)
+		return (NULL);
+	str = read_line(fd, stash);
+	stash = gnl_strchr(str, '\n');
+	if (stash)
+	{
+		str = gnl_substr(str, 0, gnl_strlen(str) - gnl_strlen(stash) + 1);
+		stash++;
+		return (str);
+	}
+	return (str);
+}
 
 #include <fcntl.h>
 int	main(int argc, char *argv[])
