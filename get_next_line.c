@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:48:48 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/02 13:46:34 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/02 15:56:26 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include <stdio.h>
 
-char	*read_line(int fd, char *str)
+char	*read_line(int fd, char *stash)
 {
 	char	*BUFF;
 	size_t	bytes_read;
