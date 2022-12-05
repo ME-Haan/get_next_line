@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:48:48 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/02 15:56:26 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/05 17:53:28 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,46 +16,61 @@
 
 char	*read_line(int fd, char *stash)
 {
-	char	*BUFF;
-	size_t	bytes_read;
+	char	*buff;
+	char	*str;
 	char	*tmp;
+	size_t	bytes_read;
 
-	BUFF = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (!BUFF)
+	buff = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buff)
 		return (NULL);
-	bytes_read = 1;
-	str = gnl_strdup("");
+	if (!stash)
+		str = gnl_strdup("");
+	else
+		str = gnl_strdup(stash);
+	bytes_read = read(fd, buff, BUFFER_SIZE);
 	while (bytes_read > 0)
 	{
-		bytes_read = read(fd, BUFF, BUFFER_SIZE);
-		BUFF[bytes_read] = '\0';
-		tmp = gnl_strjoin(str, BUFF);
+		buff[bytes_read] = '\0';
+		if (tmp)
+			free(tmp);
+		tmp = gnl_strjoin(str, buff);
 		if (!tmp)
-			return (free(BUFF), free(str), NULL);
+			return (free(buff), free(str), NULL);
 		free(str);
 		str = tmp;
 		if (gnl_strchr(str, '\n'))
-			return (free(BUFF), free(tmp), str);
+			return (free(buff), free(tmp), str);
+		bytes_read = read(fd, buff, BUFFER_SIZE);
 	}
-	return (free(BUFF), free(tmp), str);
+	if (bytes_read < 0)
+		return (free(buff), free(tmp), free(str), NULL);
+	return (free(buff), free(tmp), str);
 }
 
 char	*get_next_line(int fd)
 {
 	static char	*stash;
 	char		*str;
+	char		*tmp;
 
 	if (fd < 0 || BUFFER_SIZE < 0)
 		return (NULL);
-	str = read_line(fd, stash);
-	stash = gnl_strchr(str, '\n');
-	if (stash)
+	tmp = read_line(fd, stash);
+	if (!tmp)
+		return (NULL);
+	stash = NULL;
+	stash = gnl_strchr(tmp, '\n');
+	if (*stash)
 	{
-		str = gnl_substr(str, 0, gnl_strlen(str) - gnl_strlen(stash) + 1);
 		stash++;
-		return (str);
+		str = gnl_substr(tmp, 0, gnl_strlen(tmp) - gnl_strlen(stash));
+		if (!str)
+			return (free(tmp), NULL);
+		return (free(tmp), str);
 	}
-	return (str);
+	str = tmp;
+	return (free(tmp), str);
 }
 
 #include <fcntl.h>
@@ -66,6 +81,7 @@ int	main(int argc, char *argv[])
 	char *str;
 
 	fd = open(argv[1], O_RDONLY);
-	str = get_next_line(fd);
-	printf("File:\n%s", str);
+	printf("File:\n");
+	while ((str = get_next_line(fd)) != NULL)
+		printf("%s", str);
 }
