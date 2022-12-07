@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:48:48 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/05 17:53:28 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/07 18:11:50 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,17 @@
 
 #include <stdio.h>
 
-char	*read_line(int fd, char *stash)
+static char	*set_stash(char *str, char *stash)
+{
+
+}
+
+static char	*get_line(char *str, char *stash)
+{
+
+}
+
+static char	*read_file(int fd, char *stash)
 {
 	char	*buff;
 	char	*str;
@@ -24,10 +34,6 @@ char	*read_line(int fd, char *stash)
 	buff = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buff)
 		return (NULL);
-	if (!stash)
-		str = gnl_strdup("");
-	else
-		str = gnl_strdup(stash);
 	bytes_read = read(fd, buff, BUFFER_SIZE);
 	while (bytes_read > 0)
 	{
@@ -37,7 +43,8 @@ char	*read_line(int fd, char *stash)
 		tmp = gnl_strjoin(str, buff);
 		if (!tmp)
 			return (free(buff), free(str), NULL);
-		free(str);
+		if (str)
+			free(str);
 		str = tmp;
 		if (gnl_strchr(str, '\n'))
 			return (free(buff), free(tmp), str);
@@ -54,13 +61,17 @@ char	*get_next_line(int fd)
 	char		*str;
 	char		*tmp;
 
-	if (fd < 0 || BUFFER_SIZE < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	tmp = read_line(fd, stash);
+	tmp = read_file(fd, stash);
 	if (!tmp)
 		return (NULL);
-	stash = NULL;
-	stash = gnl_strchr(tmp, '\n');
+	str = get_line(tmp);
+	stash = set_stash(str, tmp);
+
+
+
+
 	if (*stash)
 	{
 		stash++;
@@ -76,12 +87,15 @@ char	*get_next_line(int fd)
 #include <fcntl.h>
 int	main(int argc, char *argv[])
 {
-	(void)argc;
-	int	fd;
+	(void) argc;
+	int fd;
 	char *str;
 
 	fd = open(argv[1], O_RDONLY);
 	printf("File:\n");
 	while ((str = get_next_line(fd)) != NULL)
+	{
+		printf("test\n");
 		printf("%s", str);
+	}
 }

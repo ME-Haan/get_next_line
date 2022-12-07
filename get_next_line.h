@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:50:01 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/02 10:35:53 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/07 15:44:34 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 // prototypes
 char	*get_next_line(int fd);
-char	*gnl_readline(int fd);
+char	*read_file(int fd, char *stash);
 void	*gnl_memcpy(void *dst, const void *src, size_t n);
 char	*gnl_strdup(const char *s1);
 char	*gnl_strjoin(char const *s1, char const *s2);
