@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:53:10 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/07 17:58:55 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/08 16:33:52 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ size_t	gnl_strlen(const char *str)
 	return (i);
 }
 
-char	*gnl_strjoin(char const *s1, char const *s2)
+char	*gnl_strjoin(char *s1, char const *s2)
 {
 	const size_t	s1len = gnl_strlen(s1);
 	const size_t	s2len = gnl_strlen(s2);
@@ -35,12 +35,15 @@ char	*gnl_strjoin(char const *s1, char const *s2)
 	{
 		if (s1)
 			free(s1);
-		return (-1);
+		return (NULL);
 	}
 	if (s1)
+	{
 		gnl_memcpy(mem, s1, s1len);
+		free(s1);
+	}
 	gnl_memcpy(mem + s1len, s2, s2len + 1);
-	return (free(s1), mem);
+	return (mem);
 }
 
 void	*gnl_memcpy(void *dst, const void *src, size_t n)
@@ -56,7 +59,7 @@ void	*gnl_memcpy(void *dst, const void *src, size_t n)
 	return (dst);
 }
 
-char	*gnl_substr(char const *s, unsigned int start, size_t len)
+char	*gnl_substr(char *s, unsigned int start, size_t len)
 {
 	char	*mem;
 
@@ -92,6 +95,8 @@ size_t	gnl_strlcpy(char *dst, const char *src, size_t dstsize)
 
 char	*gnl_strchr(const char *s, int c)
 {
+	if (!s)
+		return (0);
 	while (*s)
 	{
 		if (*s == (char)c)
