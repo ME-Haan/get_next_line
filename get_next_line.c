@@ -6,15 +6,17 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:48:48 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/08 16:52:40 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/08 18:06:41 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+#include <stdio.h>
+
 static char	*read_file(int fd, char *stash);
 static char	*get_line(char *str);
-static char	*set_stash(char *str, char *stash);
+static char	*set_stash(char *str);
 
 char	*get_next_line(int fd)
 {
@@ -30,11 +32,11 @@ char	*get_next_line(int fd)
 		tmp = read_file(fd, stash);
 	if (!tmp)
 		return (free(stash), NULL);
+	stash = set_stash(tmp);
 	str = get_line(tmp);
 	if (!str)
-		return (free(stash), free(tmp), NULL);
-	stash = set_stash(str, stash);
-	return (free(tmp), str);
+		return (free(stash), NULL);
+	return (str);
 }
 
 static char	*read_file(int fd, char *stash)
@@ -74,16 +76,17 @@ static char	*get_line(char *str)
 	{
 		line = gnl_substr(str, 0, gnl_strlen(str) - gnl_strlen(pos) + 1);
 		if (!line)
-			return (NULL);
-		return (line);
+			return (free(str), NULL);
+		return (free(str), line);
 	}
 	else
-		return (line = str, line);
+		return (line = gnl_strjoin(str, ""), line);
 }
 
-static char	*set_stash(char *str, char *stash)
+static char	*set_stash(char *str)
 {
 	char	*nl_pos;
+	char	*stash;
 
 	nl_pos = gnl_strchr(str, '\n');
 	if (nl_pos)
