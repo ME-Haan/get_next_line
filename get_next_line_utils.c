@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:53:10 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/08 16:33:52 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/10 16:10:10 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,14 @@ char	*gnl_strjoin(char *s1, char const *s2)
 	char			*mem;
 
 	mem = (char *)malloc(s1len + s2len + 1 * sizeof(char));
-	if (!mem)
-	{
-		if (s1)
-			free(s1);
+	if (!mem && s1)
+		return (free(s1), NULL);
+	if (!mem && !s1)
 		return (NULL);
-	}
 	if (s1)
-	{
 		gnl_memcpy(mem, s1, s1len);
-		free(s1);
-	}
 	gnl_memcpy(mem + s1len, s2, s2len + 1);
-	return (mem);
+	return (free(s1), mem);
 }
 
 void	*gnl_memcpy(void *dst, const void *src, size_t n)
@@ -72,7 +67,7 @@ char	*gnl_substr(char *s, unsigned int start, size_t len)
 		len = gnl_strlen(s) - start;
 	mem = (char *)malloc((len + 1) * sizeof(char));
 	if (!mem)
-		return (free(s), NULL);
+		return (NULL);
 	gnl_strlcpy(mem, s + start, len + 1);
 	return (mem);
 }

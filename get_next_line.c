@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:48:48 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/08 18:06:41 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/10 16:57:36 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,15 @@ char	*get_next_line(int fd)
 	static char	*stash;
 	char		*str;
 	char		*tmp;
+	char		*buff[0];
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE <= 0 || read(fd, buff, 0) == -1)
+	{
+		if (stash)
+			free(stash);
 		return (NULL);
-	if (gnl_strchr(stash, '\n'))
+	}
+	if (stash && gnl_strchr(stash, '\n'))
 		tmp = gnl_strjoin(stash, "");
 	else
 		tmp = read_file(fd, stash);
@@ -34,7 +39,9 @@ char	*get_next_line(int fd)
 		return (free(stash), NULL);
 	stash = set_stash(tmp);
 	str = get_line(tmp);
-	if (!str)
+	if (gnl_strlen(str) == 0 && str)
+		return (free(stash), free(str), NULL);
+	else if (gnl_strlen(str) == 0 && !str)
 		return (free(stash), NULL);
 	return (str);
 }
@@ -56,14 +63,14 @@ static char	*read_file(int fd, char *stash)
 		buff[bytes_read] = '\0';
 		tmp = gnl_strjoin(str, buff);
 		if (!tmp)
-			return (free(buff), free(str), NULL);
+			return (free(buff), NULL);
 		str = gnl_strjoin(tmp, "");
 		if (gnl_strchr(str, '\n'))
 			return (free(buff), str);
 		bytes_read = read(fd, buff, BUFFER_SIZE);
 	}
 	if (bytes_read < 0)
-		return (free(buff), free(str), NULL);
+		return (free(buff), free(str), free(stash), NULL);
 	return (free(buff), str);
 }
 
