@@ -6,13 +6,13 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:53:10 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/14 18:07:55 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/15 15:52:32 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	gnl_strlen(const char *str)
+size_t	gnl_strlen(char *str)
 {
 	size_t	i;
 
@@ -24,24 +24,27 @@ size_t	gnl_strlen(const char *str)
 	return (i);
 }
 
-char	*gnl_strjoin(char *s1, char const *s2, int tofree)
+char	*gnl_strjoin(char *s1, char *s2)
 {
 	char			*mem;
 
+	if (!s1)
+	{
+		s1 = (char *)malloc(1 * sizeof(char));
+		s1[0] = '\0';
+	}
 	if (!s1 || !s2)
 		return (NULL);
 	mem = (char *)malloc((gnl_strlen(s1) + gnl_strlen(s2) + 1) * sizeof(char));
 	if (!mem)
-		return (NULL);
-	gnl_memcpy(mem, s1, gnl_strlen(s1));
+		return (free(s1), NULL);
+	if (s1)
+		gnl_memcpy(mem, s1, gnl_strlen(s1));
 	gnl_memcpy(mem + gnl_strlen(s1), s2, gnl_strlen(s2) + 1);
-	if (tofree)
-		return (free(s1), mem);
-	else
-		return (mem);
+	return (free(s1), mem);
 }
 
-void	*gnl_memcpy(void *dst, const void *src, size_t n)
+void	*gnl_memcpy(void *dst, void *src, size_t n)
 {
 	const char	*stmp = (const char *)src;
 	char		*dtmp;
@@ -58,6 +61,11 @@ char	*gnl_substr(char *s, unsigned int start, size_t len)
 {
 	char	*mem;
 
+	if (!s)
+	{
+		s = (char *)malloc(1 * sizeof(char));
+		s[0] = '\0';
+	}
 	if (start > gnl_strlen(s))
 	{
 		len = 0;
@@ -72,7 +80,7 @@ char	*gnl_substr(char *s, unsigned int start, size_t len)
 	return (mem);
 }
 
-size_t	gnl_strlcpy(char *dst, const char *src, size_t dstsize)
+size_t	gnl_strlcpy(char *dst, char *src, size_t dstsize)
 {
 	const size_t	srclen = gnl_strlen(src);
 	size_t			i;
