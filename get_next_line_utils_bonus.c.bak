@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   get_next_line_utils.c                              :+:    :+:            */
+/*   get_next_line_utils_bonus.c                        :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:53:10 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/19 17:13:28 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/19 14:11:26 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 size_t	gnl_strlen(char *str)
 {
@@ -28,6 +28,15 @@ char	*gnl_strjoin(char *s1, char *s2)
 {
 	char	*mem;
 
+	if (!s1)
+	{
+		s1 = (char *)malloc(1 * sizeof(char));
+		if (!s1)
+			return (NULL);
+		s1[0] = '\0';
+	}
+	if (!s2)
+		return (free(s1), NULL);
 	mem = (char *)malloc((gnl_strlen(s1) + gnl_strlen(s2) + 1) * sizeof(char));
 	if (!mem)
 		return (free(s1), NULL);
@@ -49,42 +58,44 @@ void	*gnl_memcpy(void *dst, void *src, size_t n)
 	return (dst);
 }
 
-char	*gnl_substr(char *src, size_t len)
+char	*gnl_substr(char *s, unsigned int start, size_t len)
 {
 	char	*mem;
 	size_t	i;
 	size_t	srclen;
 
-	srclen = gnl_strlen(src);
-	if (!srclen || !len)
-		return (NULL);
+	if (!s)
+	{
+		s = (char *)malloc(1 * sizeof(char));
+		s[0] = '\0';
+	}
+	srclen = gnl_strlen(s);
+	if (len > (gnl_strlen(s) - start))
+		len = gnl_strlen(s) - start;
 	mem = (char *)malloc((len + 1) * sizeof(char));
 	if (!mem)
 		return (NULL);
 	i = 0;
-	while (src[i] && i < len)
+	while (s[i + start] && i < len && len != 0)
 	{
-			mem[i] = src[i];
+			mem[i] = s[i + start];
 			i++;
 	}
 	mem[i] = '\0';
 	return (mem);
 }
 
-char	*gnl_strchr(const char *s, int c)
+char	*gnl_strchr(char *s, int c)
 {
-	char	*nstr;
-
 	if (!s)
 		return (0);
-	nstr = (char *)s;
-	while (*nstr)
+	while (*s)
 	{
-		if (*nstr == (char)c)
-			return (nstr);
-		nstr++;
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
 	}
-	if (*nstr == (char)c)
-		return (nstr);
+	if (*s == (char)c)
+		return ((char *)s);
 	return (0);
 }

@@ -1,35 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   get_next_line.c                                    :+:    :+:            */
+/*   get_next_line_bonus.c                              :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:48:48 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/19 18:06:18 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/19 13:24:38 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
-
-static char	*read_file(int fd, char *stash);
-static char	*get_line(char *str);
-static char	*update_stash(char *str);
-
-char	*get_next_line(int fd)
-{
-	static char	*stash = NULL;
-	char		*line;
-
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	stash = read_file(fd, stash);
-	if (!stash)
-		return (NULL);
-	line = get_line(stash);
-	stash = update_stash(stash);
-	return (line);
-}
+#include "get_next_line_bonus.h"
 
 static char	*read_file(int fd, char *stash)
 {
@@ -47,13 +28,11 @@ static char	*read_file(int fd, char *stash)
 			return (free(stash), free(buff), NULL);
 		buff[bytes_read] = '\0';
 		stash = gnl_strjoin(stash, buff);
-		if (!stash)
-			return (free(buff), NULL);
 	}
 	return (free(buff), stash);
 }
 
-static char	*get_line(char *stash)
+static char	*get_lines(char *stash)
 {
 	char	*nl_pos;
 	char	*line;
@@ -63,42 +42,38 @@ static char	*get_line(char *stash)
 	nl_pos = gnl_strchr(stash, '\n');
 	if (nl_pos)
 	{
-		line = gnl_substr(stash, gnl_strlen(stash) - gnl_strlen(nl_pos) + 1);
+		line = gnl_substr(stash, 0, gnl_strlen(stash) - gnl_strlen(nl_pos) + 1);
 		return (line);
 	}
 	else
-	{
-		line = gnl_substr(stash, gnl_strlen(stash));
-		return (line);
-	}
+		return (line = gnl_substr(stash, 0, gnl_strlen(stash) + 1), line);
 }
 
 static char	*update_stash(char *stash)
 {
+	char	*pos;
 	char	*nstash;
-	int		i;
 
-	i = 0;
-	while (stash[i] && stash[i] != '\n')
-		i++;
-	if (!stash[i])
-		return (free(stash), NULL);
-	nstash = gnl_substr(&stash[i + 1], gnl_strlen(stash) - i - 1);
-	return (free(stash), nstash);
+	pos = gnl_strchr(stash, '\n');
+	if (pos)
+	{
+		nstash = gnl_substr(pos, 1, gnl_strlen(pos));
+		return (free(stash), nstash);
+	}
+	return (free(stash), NULL);
 }
 
-// static char	*update_stash(char *stash)
-// {
-// 	char	*pos;
-// 	char	*nstash;
+char	*get_next_line(int fd)
+{
+	static char	*stash[10240];
+	char		*line;
 
-// 	pos = gnl_strchr(stash, '\n');
-// 	if (pos && pos + 1 != '\0')
-// 	{
-// 		nstash = gnl_substr(pos + 1, gnl_strlen(pos) - 1);
-// 		// return (free(stash), nstash);
-// 		return (nstash);
-// 	}
-// 	// return (free(stash), NULL);
-// 	return (NULL);
-// }
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	stash[fd] = read_file(fd, stash[fd]);
+	if (!stash[fd])
+		return (NULL);
+	line = get_lines(stash[fd]);
+	stash[fd] = update_stash(stash[fd]);
+	return (line);
+}
