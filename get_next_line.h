@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:50:01 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/19 17:10:37 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/22 19:29:18 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 42
+#  define BUFFER_SIZE 10
 # endif
 
 // includes
@@ -26,7 +26,7 @@
 char	*get_next_line(int fd);
 
 void	*gnl_memcpy(void *dst, void *src, size_t n);
-char	*gnl_strjoin(char *s1, char *s2);
+char	*gnl_strjoin(char *s1, char *s2, int tofree);
 char	*gnl_strchr(const char *s, int c);
 size_t	gnl_strlen(char *str);
 char	*gnl_substr(char *src, size_t len);

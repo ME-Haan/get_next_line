@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:48:48 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/19 18:06:18 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/22 19:52:26 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,18 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
+	if (!stash)
+	{
+		stash = gnl_strjoin("", "", 0);
+		if (!stash)
+			return (NULL);
+	}
 	stash = read_file(fd, stash);
 	if (!stash)
 		return (NULL);
 	line = get_line(stash);
+	if (!line)
+		return (free(stash), stash = NULL, NULL);
 	stash = update_stash(stash);
 	return (line);
 }
@@ -38,7 +46,7 @@ static char	*read_file(int fd, char *stash)
 
 	buff = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buff)
-		return (NULL);
+		return (free(stash), NULL);
 	bytes_read = 1;
 	while (!gnl_strchr(stash, '\n') && bytes_read != 0)
 	{
@@ -46,7 +54,7 @@ static char	*read_file(int fd, char *stash)
 		if (bytes_read == -1)
 			return (free(stash), free(buff), NULL);
 		buff[bytes_read] = '\0';
-		stash = gnl_strjoin(stash, buff);
+		stash = gnl_strjoin(stash, buff, 1);
 		if (!stash)
 			return (free(buff), NULL);
 	}
@@ -62,15 +70,10 @@ static char	*get_line(char *stash)
 		return (NULL);
 	nl_pos = gnl_strchr(stash, '\n');
 	if (nl_pos)
-	{
 		line = gnl_substr(stash, gnl_strlen(stash) - gnl_strlen(nl_pos) + 1);
-		return (line);
-	}
 	else
-	{
 		line = gnl_substr(stash, gnl_strlen(stash));
-		return (line);
-	}
+	return (line);
 }
 
 static char	*update_stash(char *stash)
@@ -79,26 +82,19 @@ static char	*update_stash(char *stash)
 	int		i;
 
 	i = 0;
+	if (!stash[0])
+		return (NULL);
 	while (stash[i] && stash[i] != '\n')
 		i++;
-	if (!stash[i])
+	if (stash[i] == '\n')
+		i++;
+	if (stash[i])
+	{
+		nstash = gnl_substr(&stash[i], gnl_strlen(stash) - i);
+		if (!nstash)
+			return (free(stash), NULL);
+	}
+	else
 		return (free(stash), NULL);
-	nstash = gnl_substr(&stash[i + 1], gnl_strlen(stash) - i - 1);
 	return (free(stash), nstash);
 }
-
-// static char	*update_stash(char *stash)
-// {
-// 	char	*pos;
-// 	char	*nstash;
-
-// 	pos = gnl_strchr(stash, '\n');
-// 	if (pos && pos + 1 != '\0')
-// 	{
-// 		nstash = gnl_substr(pos + 1, gnl_strlen(pos) - 1);
-// 		// return (free(stash), nstash);
-// 		return (nstash);
-// 	}
-// 	// return (free(stash), NULL);
-// 	return (NULL);
-// }

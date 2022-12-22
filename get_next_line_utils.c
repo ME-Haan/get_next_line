@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:53:10 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/19 17:13:28 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/22 19:30:36 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,25 @@ size_t	gnl_strlen(char *str)
 	return (i);
 }
 
-char	*gnl_strjoin(char *s1, char *s2)
+char	*gnl_strjoin(char *s1, char *s2, int tofree)
 {
-	char	*mem;
+	char			*mem;
+	const size_t	s1len = gnl_strlen(s1);
+	const size_t	s2len = gnl_strlen(s2);
 
-	mem = (char *)malloc((gnl_strlen(s1) + gnl_strlen(s2) + 1) * sizeof(char));
+	if (!s1len && !s2len && !tofree)
+	{
+		mem = (char *)malloc(1 * sizeof(char));
+		if (!mem)
+			return (NULL);
+		mem[0] = '\0';
+		return (mem);
+	}
+	mem = (char *)malloc((s1len + s2len + 1) * sizeof(char));
 	if (!mem)
 		return (free(s1), NULL);
-	gnl_memcpy(mem, s1, gnl_strlen(s1));
-	gnl_memcpy(mem + gnl_strlen(s1), s2, gnl_strlen(s2) + 1);
+	gnl_memcpy(mem, s1, s1len);
+	gnl_memcpy(mem + s1len, s2, s2len + 1);
 	return (free(s1), mem);
 }
 
@@ -46,7 +56,7 @@ void	*gnl_memcpy(void *dst, void *src, size_t n)
 	dtmp = (char *)dst;
 	while (n-- > 0)
 		dtmp[n] = stmp[n];
-	return (dst);
+	return (dtmp);
 }
 
 char	*gnl_substr(char *src, size_t len)
@@ -75,9 +85,9 @@ char	*gnl_strchr(const char *s, int c)
 {
 	char	*nstr;
 
-	if (!s)
-		return (0);
 	nstr = (char *)s;
+	if (!nstr)
+		return (0);
 	while (*nstr)
 	{
 		if (*nstr == (char)c)
