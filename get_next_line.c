@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:48:48 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/23 13:52:53 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/23 16:58:09 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,14 @@ static char	*read_file(int fd, char *stash)
 	buff = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buff)
 		return (free(stash), NULL);
-	bytes_read = 1;
-	while (!gnl_strchr(stash, '\n') && bytes_read != 0)
+	while (!gnl_strchr(stash, '\n'))
 	{
 		bytes_read = read(fd, buff, BUFFER_SIZE);
 		if (bytes_read == -1)
 			return (free(stash), free(buff), NULL);
 		buff[bytes_read] = '\0';
+		if (bytes_read == 0)
+			return (free(buff), stash);
 		stash = gnl_strjoin(stash, buff);
 		if (!stash)
 			return (free(buff), NULL);
@@ -80,14 +81,12 @@ static char	*get_line(char *stash)
 static char	*update_stash(char *stash)
 {
 	char	*nstash;
-	int		i;
+	char	*nl_pos;
 
-	i = 0;
-	while (stash[i] && stash[i] != '\n')
-		i++;
-	if (stash[i] == '\n')
-		i++;
-	nstash = gnl_substr(&stash[i], gnl_strlen(stash) - i);
+	nl_pos = gnl_strchr(stash, '\n');
+	if (!nl_pos)
+		return (free(stash), NULL);
+	nstash = gnl_substr(nl_pos + 1, gnl_strlen(nl_pos) - 1);
 	if (!nstash)
 		return (free(stash), NULL);
 	return (free(stash), nstash);

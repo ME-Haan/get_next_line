@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:53:10 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/23 14:02:49 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/23 16:58:38 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,29 +23,6 @@ size_t	gnl_strlen(char *str)
 		i++;
 	return (i);
 }
-
-// char	*gnl_strjoin(char *s1, char *s2, int tofree)
-// {
-// 	char			*mem;
-// 	const size_t	s1len = gnl_strlen(s1);
-// 	const size_t	s2len = gnl_strlen(s2);
-
-// 	if (!s1len && !s2len && !tofree)
-// 	{
-// 		mem = (char *)malloc(1 * sizeof(char));
-// 		if (!mem)
-// 			return (NULL);
-// 		mem[0] = '\0';
-// 		return (mem);
-// 	}
-// 	tofree = 1;
-// 	mem = (char *)malloc((s1len + s2len + 1) * sizeof(char));
-// 	if (!mem)
-// 		return (free(s1), NULL);
-// 	gnl_memcpy(mem, s1, s1len);
-// 	gnl_memcpy(mem + s1len, s2, s2len + 1);
-// 	return (free(s1), mem);
-// }
 
 char	*gnl_strjoin(char *s1, char *s2)
 {
@@ -101,12 +78,8 @@ char	*gnl_strchr(const char *s, int c)
 	char	*nstr;
 
 	nstr = (char *)s;
-	while (*nstr)
-	{
-		if (*nstr == (char)c)
-			return (nstr);
+	while (*nstr && *nstr != (char)c)
 		nstr++;
-	}
 	if (*nstr == (char)c)
 		return (nstr);
 	return (0);
