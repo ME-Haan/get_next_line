@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:48:48 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/22 19:52:26 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/23 13:52:53 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,20 @@ static char	*update_stash(char *str);
 
 char	*get_next_line(int fd)
 {
-	static char	*stash = NULL;
+	static char	*stash;
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (!stash)
-	{
-		stash = gnl_strjoin("", "", 0);
-		if (!stash)
-			return (NULL);
-	}
+	stash = gnl_strjoin(stash, "");
+	if (!&stash[0])
+		return (NULL);
+	// if (!stash)
+	// {
+	// 	stash = gnl_strjoin("", "", 0);
+	// 	if (!stash)
+	// 		return (NULL);
+	// }
 	stash = read_file(fd, stash);
 	if (!stash)
 		return (NULL);
@@ -54,7 +57,7 @@ static char	*read_file(int fd, char *stash)
 		if (bytes_read == -1)
 			return (free(stash), free(buff), NULL);
 		buff[bytes_read] = '\0';
-		stash = gnl_strjoin(stash, buff, 1);
+		stash = gnl_strjoin(stash, buff);
 		if (!stash)
 			return (free(buff), NULL);
 	}
@@ -66,8 +69,6 @@ static char	*get_line(char *stash)
 	char	*nl_pos;
 	char	*line;
 
-	if (!stash[0])
-		return (NULL);
 	nl_pos = gnl_strchr(stash, '\n');
 	if (nl_pos)
 		line = gnl_substr(stash, gnl_strlen(stash) - gnl_strlen(nl_pos) + 1);
@@ -82,19 +83,12 @@ static char	*update_stash(char *stash)
 	int		i;
 
 	i = 0;
-	if (!stash[0])
-		return (NULL);
 	while (stash[i] && stash[i] != '\n')
 		i++;
 	if (stash[i] == '\n')
 		i++;
-	if (stash[i])
-	{
-		nstash = gnl_substr(&stash[i], gnl_strlen(stash) - i);
-		if (!nstash)
-			return (free(stash), NULL);
-	}
-	else
+	nstash = gnl_substr(&stash[i], gnl_strlen(stash) - i);
+	if (!nstash)
 		return (free(stash), NULL);
 	return (free(stash), nstash);
 }

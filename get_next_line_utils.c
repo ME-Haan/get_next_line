@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:53:10 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/22 19:30:36 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/23 11:31:02 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,35 @@ size_t	gnl_strlen(char *str)
 	return (i);
 }
 
-char	*gnl_strjoin(char *s1, char *s2, int tofree)
+// char	*gnl_strjoin(char *s1, char *s2, int tofree)
+// {
+// 	char			*mem;
+// 	const size_t	s1len = gnl_strlen(s1);
+// 	const size_t	s2len = gnl_strlen(s2);
+
+// 	if (!s1len && !s2len && !tofree)
+// 	{
+// 		mem = (char *)malloc(1 * sizeof(char));
+// 		if (!mem)
+// 			return (NULL);
+// 		mem[0] = '\0';
+// 		return (mem);
+// 	}
+// 	tofree = 1;
+// 	mem = (char *)malloc((s1len + s2len + 1) * sizeof(char));
+// 	if (!mem)
+// 		return (free(s1), NULL);
+// 	gnl_memcpy(mem, s1, s1len);
+// 	gnl_memcpy(mem + s1len, s2, s2len + 1);
+// 	return (free(s1), mem);
+// }
+
+char	*gnl_strjoin(char *s1, char *s2)
 {
 	char			*mem;
 	const size_t	s1len = gnl_strlen(s1);
 	const size_t	s2len = gnl_strlen(s2);
 
-	if (!s1len && !s2len && !tofree)
-	{
-		mem = (char *)malloc(1 * sizeof(char));
-		if (!mem)
-			return (NULL);
-		mem[0] = '\0';
-		return (mem);
-	}
 	mem = (char *)malloc((s1len + s2len + 1) * sizeof(char));
 	if (!mem)
 		return (free(s1), NULL);
@@ -66,7 +81,7 @@ char	*gnl_substr(char *src, size_t len)
 	size_t	srclen;
 
 	srclen = gnl_strlen(src);
-	if (!srclen || !len)
+	if (!srclen && !len)
 		return (NULL);
 	mem = (char *)malloc((len + 1) * sizeof(char));
 	if (!mem)
@@ -86,8 +101,6 @@ char	*gnl_strchr(const char *s, int c)
 	char	*nstr;
 
 	nstr = (char *)s;
-	if (!nstr)
-		return (0);
 	while (*nstr)
 	{
 		if (*nstr == (char)c)
