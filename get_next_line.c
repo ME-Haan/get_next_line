@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:48:48 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/23 16:58:09 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/28 11:16:01 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,8 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	stash = gnl_strjoin(stash, "");
-	if (!&stash[0])
+	if (!stash)
 		return (NULL);
-	// if (!stash)
-	// {
-	// 	stash = gnl_strjoin("", "", 0);
-	// 	if (!stash)
-	// 		return (NULL);
-	// }
 	stash = read_file(fd, stash);
 	if (!stash)
 		return (NULL);
