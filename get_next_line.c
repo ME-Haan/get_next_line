@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:48:48 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/28 11:16:01 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/29 12:17:16 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ static char	*read_file(int fd, char *stash)
 		bytes_read = read(fd, buff, BUFFER_SIZE);
 		if (bytes_read == -1)
 			return (free(stash), free(buff), NULL);
-		buff[bytes_read] = '\0';
 		if (bytes_read == 0)
 			return (free(buff), stash);
+		buff[bytes_read] = '\0';
 		stash = gnl_strjoin(stash, buff);
 		if (!stash)
 			return (free(buff), NULL);

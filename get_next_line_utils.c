@@ -6,13 +6,13 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:53:10 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/23 16:58:58 by mhaan         ########   odam.nl         */
+/*   Updated: 2022/12/29 12:42:46 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	gnl_strlen(char *str)
+size_t	gnl_strlen(const char *str)
 {
 	size_t	i;
 
@@ -24,7 +24,7 @@ size_t	gnl_strlen(char *str)
 	return (i);
 }
 
-char	*gnl_strjoin(char *s1, char *s2)
+char	*gnl_strjoin(char *s1, const char *s2)
 {
 	char			*mem;
 	const size_t	s1len = gnl_strlen(s1);
@@ -38,9 +38,9 @@ char	*gnl_strjoin(char *s1, char *s2)
 	return (free(s1), mem);
 }
 
-void	*gnl_memcpy(void *dst, void *src, size_t n)
+void	*gnl_memcpy(void *dst, const void *src, size_t n)
 {
-	const char	*stmp = (const char *)src;
+	const char	*stmp = src;
 	char		*dtmp;
 
 	if (!dst && !src)
@@ -51,14 +51,12 @@ void	*gnl_memcpy(void *dst, void *src, size_t n)
 	return (dtmp);
 }
 
-char	*gnl_substr(char *src, size_t len)
+char	*gnl_substr(const char *src, size_t len)
 {
-	char	*mem;
-	size_t	i;
-	size_t	srclen;
+	char			*mem;
+	size_t			i;
 
-	srclen = gnl_strlen(src);
-	if (!srclen && !len)
+	if (!len)
 		return (NULL);
 	mem = (char *)malloc((len + 1) * sizeof(char));
 	if (!mem)
