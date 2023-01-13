@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:48:48 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/29 12:17:16 by mhaan         ########   odam.nl         */
+/*   Updated: 2023/01/13 13:20:08 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,25 +38,23 @@ char	*get_next_line(int fd)
 
 static char	*read_file(int fd, char *stash)
 {
-	char	*buff;
+	char	buff[BUFFER_SIZE + 1];
 	int		bytes_read;
 
-	buff = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (!buff)
-		return (free(stash), NULL);
-	while (!gnl_strchr(stash, '\n'))
+	bytes_read = 1;
+	while (bytes_read)
 	{
 		bytes_read = read(fd, buff, BUFFER_SIZE);
 		if (bytes_read == -1)
-			return (free(stash), free(buff), NULL);
-		if (bytes_read == 0)
-			return (free(buff), stash);
+			return (free(stash), NULL);
 		buff[bytes_read] = '\0';
 		stash = gnl_strjoin(stash, buff);
 		if (!stash)
-			return (free(buff), NULL);
+			return (NULL);
+		if (gnl_strchr(buff, '\n'))
+			break ;
 	}
-	return (free(buff), stash);
+	return (stash);
 }
 
 static char	*get_line(char *stash)
