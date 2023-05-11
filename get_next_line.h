@@ -6,7 +6,7 @@
 /*   By: mhaan <mhaan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/15 11:50:01 by mhaan         #+#    #+#                 */
-/*   Updated: 2022/12/29 12:43:22 by mhaan         ########   odam.nl         */
+/*   Updated: 2023/05/11 13:15:16 by mhaan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 42
+#  define BUFFER_SIZE 10000
 # endif
 
 // includes
