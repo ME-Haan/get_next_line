@@ -64,8 +64,8 @@ char	*gnl_substr(const char *src, size_t len)
 	i = 0;
 	while (src[i] && i < len)
 	{
-			mem[i] = src[i];
-			i++;
+		mem[i] = src[i];
+		i++;
 	}
 	mem[i] = '\0';
 	return (mem);

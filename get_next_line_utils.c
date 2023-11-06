@@ -53,8 +53,8 @@ void	*gnl_memcpy(void *dst, const void *src, size_t n)
 
 char	*gnl_substr(const char *src, size_t len)
 {
-	char			*mem;
-	size_t			i;
+	char	*mem;
+	size_t	i;
 
 	if (!len)
 		return (NULL);
@@ -64,8 +64,8 @@ char	*gnl_substr(const char *src, size_t len)
 	i = 0;
 	while (src[i] && i < len)
 	{
-			mem[i] = src[i];
-			i++;
+		mem[i] = src[i];
+		i++;
 	}
 	mem[i] = '\0';
 	return (mem);
